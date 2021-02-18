@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SAWS</title>
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="{{ url_for('static', filename='css/light.css') }}" rel="stylesheet">
+</head>
+
+<body data-theme="default" data-layout="fluid" data-sidebar-position="left" data-sidebar-behavior="sticky">
+
+    <div class="main d-flex justify-content-center w-100">
+        <main class="content d-flex p-0">
+            <div class="container d-flex flex-column">
+                <div class="row h-100">
+                    {% block body %}
+                    {% endblock %}
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+
+</html>
