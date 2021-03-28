@@ -1,4 +1,4 @@
-from wtforms import StringField, PasswordField, BooleanField
+from wtforms import StringField, PasswordField, BooleanField, RadioField, SelectField
 from wtforms.validators import InputRequired, EqualTo, Length, Email
 from flask_wtf import FlaskForm
 
@@ -65,3 +65,52 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField(
         'Remember Me',
     )
+
+
+class AddAccountForm(FlaskForm):
+    """User Signup Form."""
+
+    name = StringField(
+        'Name',
+        validators=[
+            InputRequired(),
+        ],
+        render_kw={
+            "required": True,
+            "autocomplete": "off",
+            "placeholder": "Name your account"
+        },
+    )
+
+    access_key = StringField(
+        'Access Key',
+        validators=[
+            InputRequired(),
+        ],
+        render_kw={
+            "required": True,
+            "autocomplete": "off",
+        },
+    )
+
+    secret_key = StringField(
+        'Secret Key',
+        validators=[
+            InputRequired(),
+        ],
+        render_kw={
+            "required": True,
+            "autocomplete": "off",
+        },
+    )
+
+
+class CreateInstanceForm(FlaskForm):
+    port_22 = BooleanField(
+        'SSH',
+        render_kw={
+            "checked": True,
+            "autocomplete": "off",
+        },
+    )
+    port_80 = BooleanField('HTTP')

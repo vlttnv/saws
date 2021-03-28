@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="col-xl-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-actions float-end">
+                <div class="dropdown show">
+                    <a href="#" data-bs-toggle="dropdown" data-display="static">
+                        <i class="align-middle" data-feather="more-horizontal"></i>
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-end">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </div>
+            </div>
+            <h5 class="card-title mb-0">Functions</h5>
+        </div>
+        <div class="card-body">
+            <table id="datatables-functions" class="table table-striped" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Language</th>
+                        <th>Last Modified</th>
+                        <th>Version</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in lambdas['Functions'] %}
+                    <tr>
+                        <td><a href="{{url_for('compute.single_function', id=f['FunctionName'])}}">{{f['FunctionName']}}</a></td>
+                        <td>
+                            {{f['Description']}}
+                        </td>
+                        <td>{{f['Runtime']}}</td>
+                        <td>{{f['LastModified'][:-9]}}</td>
+                        <td>{{f['Version']}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Datatables clients
+        $("#datatables-functions").DataTable({
+            responsive: true,
+        });
+    });
+</script>
+{% endblock %}

@@ -32,6 +32,12 @@ def create_app(test_config=None):
         from .blueprints import auth
         app.register_blueprint(auth.bp)
 
+        from .blueprints import account
+        app.register_blueprint(account.bp)
+
+        from .blueprints import compute
+        app.register_blueprint(compute.bp)
+
         return app
 
 

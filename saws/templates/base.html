@@ -36,24 +36,24 @@
                     <li class="sidebar-header">
                         Services
                     </li>
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="calendar.html">
+                    <li class="sidebar-item {% if request.path == '/' %}active{% endif %}">
+                        <a class="sidebar-link" href="{{url_for('index.index')}}">
                             <i class="align-middle" data-feather="sliders"></i> <span
                                 class="align-middle">Dashboard</span>
                         </a>
                     </li>
-                    <li class="sidebar-item">
+                    <li class="sidebar-item {% if '/compute' in request.path %}active{% endif %}">
                         <a data-bs-target="#compute" data-bs-toggle="collapse" class="sidebar-link collapsed">
-                            <i class="align-middle" data-feather="layout"></i> <span class="align-middle">Compute</span>
+                            <i class="align-middle" data-feather="cpu"></i> <span class="align-middle">Compute</span>
                         </a>
-                        <ul id="compute" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
-                            <li class="sidebar-item"><a class="sidebar-link" href="pages-profile.html">EC2</a></li>
-                            <li class="sidebar-item"><a class="sidebar-link" href="pages-settings.html">Lambda</a></li>
+                        <ul id="compute" class="sidebar-dropdown list-unstyled {% if '/compute' not in request.path %}collapse{% endif %} " data-bs-parent="#sidebar">
+                            <li class="sidebar-item {% if '/compute/ec2' in request.path %}active{% endif %}"><a class="sidebar-link" href="{{url_for('compute.ec2')}}">EC2</a></li>
+                            <li class="sidebar-item {% if '/compute/functions' in request.path %}active{% endif %}"><a class="sidebar-link" href="{{url_for('compute.functions')}}">Lambda</a></li>
                         </ul>
                     </li>
                     <li class="sidebar-item">
                         <a data-bs-target="#db" data-bs-toggle="collapse" class="sidebar-link collapsed">
-                            <i class="align-middle" data-feather="layout"></i> <span class="align-middle">Databases</span>
+                            <i class="align-middle" data-feather="database"></i> <span class="align-middle">Databases</span>
                         </a>
                         <ul id="db" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
                             <li class="sidebar-item"><a class="sidebar-link" href="pages-profile.html">EC2</a></li>
@@ -62,7 +62,7 @@
                     </li>
                     <li class="sidebar-item">
                         <a data-bs-target="#storage" data-bs-toggle="collapse" class="sidebar-link collapsed">
-                            <i class="align-middle" data-feather="layout"></i> <span class="align-middle">Storage</span>
+                            <i class="align-middle" data-feather="package"></i> <span class="align-middle">Storage</span>
                         </a>
                         <ul id="storage" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
                             <li class="sidebar-item"><a class="sidebar-link" href="pages-profile.html">EC2</a></li>
@@ -71,7 +71,7 @@
                     </li>
                     <li class="sidebar-item">
                         <a data-bs-target="#networking" data-bs-toggle="collapse" class="sidebar-link collapsed">
-                            <i class="align-middle" data-feather="layout"></i> <span class="align-middle">Networking</span>
+                            <i class="align-middle" data-feather="link"></i> <span class="align-middle">Networking</span>
                         </a>
                         <ul id="networking" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
                             <li class="sidebar-item"><a class="sidebar-link" href="pages-profile.html">EC2</a></li>
@@ -80,7 +80,7 @@
                     </li>
                     <li class="sidebar-item">
                         <a data-bs-target="#security" data-bs-toggle="collapse" class="sidebar-link collapsed">
-                            <i class="align-middle" data-feather="layout"></i> <span class="align-middle">Security</span>
+                            <i class="align-middle" data-feather="lock"></i> <span class="align-middle">Security</span>
                         </a>
                         <ul id="security" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
                             <li class="sidebar-item"><a class="sidebar-link" href="pages-profile.html">EC2</a></li>
@@ -113,84 +113,6 @@
 
                 <div class="navbar-collapse collapse">
                     <ul class="navbar-nav navbar-align">
-                        <li class="nav-item dropdown">
-                            <a class="nav-icon dropdown-toggle" href="#" id="messagesDropdown"
-                                data-bs-toggle="dropdown">
-                                <div class="position-relative">
-                                    <i class="align-middle" data-feather="message-circle"></i>
-                                    <span class="indicator">4</span>
-                                </div>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0"
-                                aria-labelledby="messagesDropdown">
-                                <div class="dropdown-menu-header">
-                                    <div class="position-relative">
-                                        4 New Messages
-                                    </div>
-                                </div>
-                                <div class="list-group">
-                                    <a href="#" class="list-group-item">
-                                        <div class="row g-0 align-items-center">
-                                            <div class="col-2">
-                                                <img src="img/avatars/avatar-5.jpg"
-                                                    class="avatar img-fluid rounded-circle" alt="Ashley Briggs">
-                                            </div>
-                                            <div class="col-10 ps-2">
-                                                <div class="text-dark">Ashley Briggs</div>
-                                                <div class="text-muted small mt-1">Nam pretium turpis et arcu. Duis arcu
-                                                    tortor.</div>
-                                                <div class="text-muted small mt-1">15m ago</div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <div class="row g-0 align-items-center">
-                                            <div class="col-2">
-                                                <img src="img/avatars/avatar-2.jpg"
-                                                    class="avatar img-fluid rounded-circle" alt="Carl Jenkins">
-                                            </div>
-                                            <div class="col-10 ps-2">
-                                                <div class="text-dark">Carl Jenkins</div>
-                                                <div class="text-muted small mt-1">Curabitur ligula sapien euismod
-                                                    vitae.</div>
-                                                <div class="text-muted small mt-1">2h ago</div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <div class="row g-0 align-items-center">
-                                            <div class="col-2">
-                                                <img src="img/avatars/avatar-4.jpg"
-                                                    class="avatar img-fluid rounded-circle" alt="Stacie Hall">
-                                            </div>
-                                            <div class="col-10 ps-2">
-                                                <div class="text-dark">Stacie Hall</div>
-                                                <div class="text-muted small mt-1">Pellentesque auctor neque nec urna.
-                                                </div>
-                                                <div class="text-muted small mt-1">4h ago</div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <div class="row g-0 align-items-center">
-                                            <div class="col-2">
-                                                <img src="img/avatars/avatar-3.jpg"
-                                                    class="avatar img-fluid rounded-circle" alt="Bertha Martin">
-                                            </div>
-                                            <div class="col-10 ps-2">
-                                                <div class="text-dark">Bertha Martin</div>
-                                                <div class="text-muted small mt-1">Aenean tellus metus, bibendum sed,
-                                                    posuere ac, mattis non.</div>
-                                                <div class="text-muted small mt-1">5h ago</div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="dropdown-menu-footer">
-                                    <a href="#" class="text-muted">Show all messages</a>
-                                </div>
-                            </div>
-                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-icon dropdown-toggle" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
                                 <div class="position-relative">
@@ -259,30 +181,6 @@
                             </div>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-flag dropdown-toggle" href="#" id="languageDropdown"
-                                data-bs-toggle="dropdown">
-                                <img src="img/flags/us.png" alt="English" />
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
-                                <a class="dropdown-item" href="#">
-                                    <img src="img/flags/us.png" alt="English" width="20" class="align-middle me-1" />
-                                    <span class="align-middle">English</span>
-                                </a>
-                                <a class="dropdown-item" href="#">
-                                    <img src="img/flags/es.png" alt="Spanish" width="20" class="align-middle me-1" />
-                                    <span class="align-middle">Spanish</span>
-                                </a>
-                                <a class="dropdown-item" href="#">
-                                    <img src="img/flags/de.png" alt="German" width="20" class="align-middle me-1" />
-                                    <span class="align-middle">German</span>
-                                </a>
-                                <a class="dropdown-item" href="#">
-                                    <img src="img/flags/nl.png" alt="Dutch" width="20" class="align-middle me-1" />
-                                    <span class="align-middle">Dutch</span>
-                                </a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
                             <a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#"
                                 data-bs-toggle="dropdown">
                                 <i class="align-middle" data-feather="settings"></i>
@@ -290,8 +188,7 @@
 
                             <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#"
                                 data-bs-toggle="dropdown">
-                                <img src="img/avatars/avatar.jpg" class="avatar img-fluid rounded-circle me-1"
-                                    alt="Chris Wood" /> <span class="text-dark">Chris Wood</span>
+                                <span class="text-dark">{{g.user.email}}</span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <a class="dropdown-item" href="pages-profile.html"><i class="align-middle me-1"
@@ -301,7 +198,7 @@
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="pages-settings.html">Settings & Privacy</a>
                                 <a class="dropdown-item" href="#">Help</a>
-                                <a class="dropdown-item" href="#">Sign out</a>
+                                <a class="dropdown-item" href="{{url_for('auth.logout')}}">Sign out</a>
                             </div>
                         </li>
                     </ul>
@@ -311,7 +208,8 @@
             <main class="content">
                 <div class="container-fluid p-0">
                     <div class="col-auto d-none d-sm-block">
-                        <h3>Dashboard</h3>
+                        <h3>{% block title %}
+                            {% endblock %}</h3>
                     </div>
                 </div>
                 <div class="row">
@@ -325,6 +223,8 @@
     </div>
     
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block scripts %}
+    {% endblock %}
 </body>
 
 </html>

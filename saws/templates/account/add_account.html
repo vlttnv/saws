@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SAWS</title>
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="{{ url_for('static', filename='css/light.css') }}" rel="stylesheet">
+</head>
+
+<body data-theme="default" data-layout="fluid" data-sidebar-position="left" data-sidebar-behavior="sticky">
+
+    <div class="main d-flex justify-content-center w-100">
+        <main class="content d-flex p-0">
+            <div class="container d-flex flex-column">
+                <div class="row h-100">
+                    <div class="col-sm-10 col-md-8 col-lg-6 mx-auto d-table h-100">
+                        <div class="d-table-cell align-middle">
+
+                            <div class="text-center mt-4">
+                                <h1 class="h2">Get started</h1>
+                                <p class="lead">
+                                    Start creating the best possible user experience for you customers.
+                                </p>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="m-sm-4">
+                                        {% with messages = get_flashed_messages(with_categories=true) %}
+                                        {% for category, message in messages %}
+                                        <div class="alert alert-{{category}}" role="alert">
+                                            {{ message }}
+                                        </div>
+                                        {% endfor %}
+                                        {% endwith %}
+                                        <form class="form-validate" method="POST">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                            <div class="mb-3">
+                                                <label class="form-label">Account Name</label>
+                                                {{ form.name(class_="form-control form-control-lg is-invalid" if
+                                                form.name.errors else "form-control form-control-lg") }}
+                                                {% if form.name.errors %}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.name.errors %}
+                                                    {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Access Key</label>
+                                                {{ form.access_key(class_="form-control form-control-lg is-invalid" if
+                                                form.access_key.errors else "form-control form-control-lg") }}
+                                                {% if form.access_key.errors %}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.access_key.errors %}
+                                                    {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Secret Key</label>
+                                                {{ form.secret_key(class_="form-control form-control-lg is-invalid" if
+                                                form.secret_key.errors else "form-control form-control-lg") }}
+                                                {% if form.secret_key.errors %}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.secret_key.errors %}
+                                                    {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="text-center mt-3">
+                                                <button type="submit" class="btn btn-lg btn-primary">Add</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+
+</html>

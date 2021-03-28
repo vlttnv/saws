@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block title %}
+Launch Instance
+{% endblock %}
+{% block body %}
+<div class="col-xl-8">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Configuration</h5>
+        </div>
+        <div class="card-body">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{category}}" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endwith %}
+            <form class="form-validate" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <div class="mb-3 row">
+                    <label class="col-form-label col-sm-2 text-sm-right">Operating System</label>
+                    <div class="col-sm-10" id="os">
+                        <label class="form-check">
+                            <input id="os_0" value="ubuntu" name="os" type="radio" class="form-check-input" checked>
+                            <span class="form-check-label"><i class="fab fa-ubuntu"></i> Ubuntu Server 20.04 LTS</span>
+                        </label>
+                        <label class="form-check">
+                            <input id="os_1" value="amazon" name="os" type="radio" class="form-check-input">
+                            <span class="form-check-label"><i class="fab fa-aws"></i> Amazon Linux 2</span>
+                        </label>
+                        <label class="form-check">
+                            <input id="os_2" value="redhat" name="os" type="radio" class="form-check-input">
+                            <span class="form-check-label"><i class="fab fa-redhat"></i> Red Hat Enterprise Linux
+                                8</span>
+                        </label>
+                        <label class="form-check">
+                            <input id="os_3" value="suse" name="os" type="radio" class="form-check-input">
+                            <span class="form-check-label"><i class="fab fa-suse"></i> SUSE Linux Enterprise Server 15
+                                SP2</span>
+                        </label>
+                        <label class="form-check">
+                            <input id="os_4" value="windows" name="os" type="radio" class="form-check-input">
+                            <span class="form-check-label"><i class="fab fa-windows"></i> Microsoft Windows Server 2019
+                                Base</span>
+                        </label>
+                    </div>
+                </div>
+                <fieldset class="mb-3">
+                    <div class="row">
+                        <label class="col-form-label col-sm-2 text-sm-right pt-sm-0">Machine Size</label>
+                        <div class="col-sm-10">
+                            <label class="form-check">
+                                <input id="size_0" value="tiny" name="size" type="radio" class="form-check-input" checked>
+                                <span class="form-check-label">Tiny - 1GB / 1CPU / 25GB SSD</span>
+                            </label>
+                            <label class="form-check">
+                                <input id="size_1" value="small" name="size" type="radio" class="form-check-input">
+                                <span class="form-check-label">Small - 2GB / 1CPU / 50GB SSD</span>
+                            </label>
+                            <label class="form-check">
+                                <input id="size_2" value="medium" name="size" type="radio" class="form-check-input">
+                                <span class="form-check-label">Medium - 2GB / 2CPUs / 60GB SSD</span>
+                            </label>
+                            <label class="form-check">
+                                <input id="size_3" value="large" name="size" type="radio" class="form-check-input">
+                                <span class="form-check-label">Large - 4GB / 2CPUs / 80GB SSD</span>
+                            </label>
+                            <label class="form-check">
+                                <input id="size_4" value="xl" name="size" type="radio" class="form-check-input">
+                                <span class="form-check-label">XL - 8GB / 4CPUs / 160GB SSD</span>
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+
+
+
+                <div class="mb-3 row">
+                    <label class="col-form-label col-sm-2 text-sm-right">Key Pair</label>
+                    <div class="col-sm-10">
+                        <select id="key_pair" name="key_pair" class="form-contro form-select">
+                            {% for k in keys['KeyPairs'] %}
+                            <option name="{{k['KeyName']}}" value="{{k['KeyName']}}">{{k['KeyName']}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label class="col-form-label col-sm-2 text-sm-right pt-sm-0">Open Ports</label>
+                    <div class="col-sm-10">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                                    <input type="checkbox" class="btn-check" id="port_22" name="port_22" checked>
+                                    <!-- {{ form.port_22(class_="btn-check") }} -->
+                                    <label class="btn btn-outline-primary" for="port_22">SSH</label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="port_80" name="port_80">
+                                    <label class="btn btn-outline-primary" for="port_80">HTTP</label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="https">
+                                    <label class="btn btn-outline-primary" for="https">HTTPS</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="btncheck1">
+                                    <label class="btn btn-outline-primary" for="btncheck1">SMTP</label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="btncheck2">
+                                    <label class="btn btn-outline-primary" for="btncheck2">POP3</label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="btncheck3">
+                                    <label class="btn btn-outline-primary" for="btncheck3">IMAP</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="mb-3 row">
+                    <label class="col-form-label col-sm-2 text-sm-right">Commands</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" rows="3"
+                            placeholder="Commands to be executed when the machine is created"></textarea>
+                    </div>
+                </div>
+
+
+                <div class="mb-3 row">
+                    <div class="col-sm-10 ml-sm-auto">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-rocket"></i> Launch</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

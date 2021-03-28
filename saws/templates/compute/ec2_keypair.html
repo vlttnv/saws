@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}
+Key Pairs
+{% endblock %}
+{% block body %}
+<!-- Modal -->
+<div class="modal fade" id="keypairmodal" tabindex="-1" aria-labelledby="keypairmodalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="keypairmodalLabel">Create new key pair</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form autocomplete="off">
+                <div class="modal-body">
+                    <label for="keyname" class="form-label">Key Pair Name</label>
+                    <input type="email" class="form-control" id="keyname">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="" class="btn btn-primary" id="download">Download</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="col-xl-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="float-end">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#keypairmodal">
+                    <i class="fas fa-plus"></i> New Key Pair
+                </button>
+            </div>
+            <h5 class="card-title mb-0">Your Key Pairs</h5>
+        </div>
+        <div class="card-body">
+            <table id="datatables-keypairs" class="table table-striped" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Fingerprint</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for k in keys['KeyPairs'] %}
+                    <tr>
+                        <td>{{k['KeyPairId']}}</td>
+                        <td>{{k['KeyName']}}</td>
+                        <td>{{k['KeyFingerprint']}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Datatables clients
+        $("#datatables-keypairs").DataTable({
+            responsive: true,
+        });
+    });
+    var link = document.getElementById('download')
+    document.getElementById('keyname').addEventListener("input", function (e) {
+        link.setAttribute('href', '{{url_for("compute.download_keypair", name="")}}' + e.target.value + '.pem')
+    })
+    link.addEventListener('click', function (e) {
+        link.classList.add('disabled');
+    })
+
+
+</script>
+{% endblock %}

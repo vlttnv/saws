@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title %}
+Instances
+{% endblock %}
+{% block body %}
+<!-- Stop Modal -->
+<div class="modal fade" id="stopModal" tabindex="-1" aria-labelledby="stopModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="stopModalLabel">Are you sure?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="" class="btn btn-danger" id="stopButton"></a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Stop Modal -->
+
+<div class="col-xl-12">
+    <div class="card">
+        <div class="card-header">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{category}} alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-icon">
+                    <i class="far fa-fw fa-bell"></i>
+                </div>
+                <div class="alert-message">
+                    {{ message }}
+                </div>
+            </div>
+            {% endfor %}
+            {% endwith %}
+            <div class="float-end">
+                <a class="btn btn-primary" href="{{url_for('compute.keypair')}}" role="button"><i
+                        class="fas fa-key"></i> Key Pairs</a>
+                <a class="btn btn-primary" href="{{url_for('compute.instance_create')}}" role="button"><i
+                        class="fas fa-rocket"></i> Launch Instance</a>
+            </div>
+            <h5 class="card-title mb-0">Instances</h5>
+        </div>
+        <div class="card-body">
+            <table id="datatables-instances" class="table table-striped" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Public IP</th>
+                        <th>Private IP</th>
+                        <th>State</th>
+                        <th>Stop</th>
+                        <th>Terminate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ii in ins['Reservations'] %}
+                    {% for i in ii['Instances'] %}
+                    <tr>
+                        <td><a href="{{url_for('compute.instance', id=i['InstanceId'])}}">{{i['InstanceId']}}</a></td>
+                        <td>
+                            {% for tag in i['Tags'] %}
+                            {% if tag['Key'] == 'Name' %}
+                            {{tag['Value']}}
+                            {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>{{i['InstanceType']}}</td>
+                        <td>{{i['PublicIpAddress']}}</td>
+                        <td>{{i['PrivateIpAddress']}}</td>
+                        <td><span class="badge bg-{{state_map[i['State']['Name']]}}">{{i['State']['Name']}}</span></td>
+                        <td>
+                            <button type="button"
+                                class="btn btn-warning{% if i['State']['Name'] != 'running' %} disabled{% endif %}"
+                                data-bs-toggle="modal" data-bs-target="#stopModal"
+                                data-bs-instance="{{i['InstanceId']}}" data-bs-action="stop"><i class="fas fa-stop"></i> Stop</button>
+                        </td>
+                        <td><button type="button"
+                                class="btn btn-danger{% if i['State']['Name'] == 'terminated' %} disabled{% endif %}"
+                                data-bs-toggle="modal" data-bs-target="#stopModal"
+                                data-bs-instance="{{i['InstanceId']}}" data-bs-action="terminate"><i class="fas fa-trash"></i> Terminate</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Datatables clients
+        $("#datatables-instances").DataTable({
+            responsive: true,
+        });
+    });
+
+    var stopModal = document.getElementById('stopModal')
+    stopModal.addEventListener('show.bs.modal', function (event) {
+        // Button that triggered the modal
+        var button = event.relatedTarget
+        // Extract info from data-bs-* attributes
+        var instance = button.getAttribute('data-bs-instance')
+        var action = button.getAttribute('data-bs-action')
+        var modalBody = stopModal.querySelector('.modal-body')
+        // Update the modal's content.
+        var modalTitle = stopModal.querySelector('.modal-title')
+        var modalButton = document.getElementById('stopButton')
+
+        modalTitle.textContent = 'Stop instance ' + instance
+        if (action === 'terminate') {
+            modalBody.textContent = 'Are you sure you want to terminate this instance? This cannot be undone.'
+            modalButton.href = "{{url_for('compute.instance_terminate', instance='')}}" + instance
+            modalButton.textContent = 'Yes, terminate'
+        } else if (action === 'stop') {
+            modalBody.textContent = 'Are you sure you want to stop this instance? You can alway start it again later.'
+            modalButton.href = "{{url_for('compute.instance_stop', instance='')}}" + instance
+            modalButton.textContent = 'Yes, stop'
+        }
+    })
+
+</script>
+{% endblock %}
