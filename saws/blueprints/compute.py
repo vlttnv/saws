@@ -18,6 +18,9 @@ from saws.blueprints.utils.utils_ec2 import (
     launch_instance,
     stop_instance,
     terminate_instance,
+    describe_instace,
+    create_tags,
+    EC2Instance,
 )
 from saws.blueprints.utils.utils_lambda import get_lambda_info
 from saws.forms import CreateInstanceForm
@@ -45,7 +48,23 @@ def ec2():
 @bp.route('/ec2/<id>', methods=['GET'])
 @login_required
 def instance(id):
-    return 1
+    instance = describe_instace(g.user.account, id)
+    if not instance:
+        abort(404, 'instance not found')
+    instance_object = EC2Instance(instance)
+    return render_template('compute/ec2_instance.html', i=instance_object, state_map=EC2_STATE_MAP)
+
+
+@bp.route('/ec2/<id>/name', methods=['POST'])
+@login_required
+def instance_name(id):
+    name = request.form.get('instance_name')
+    tags = [{'Key': 'Name', 'Value': name}]
+    create_tags(g.user.account, id, tags)
+
+    flash(f'Name changed to {name}', 'success')
+
+    return redirect(url_for('compute.instance', id=id))
 
 
 @bp.route('/ec2/create', methods=['GET', 'POST'])
@@ -58,16 +77,18 @@ def instance_create():
             print(request.form)
             os = request.form.get('os')
             size = request.form.get('size')
+            key_name = request.form.get('key_pair')
             port_22 = request.form.get('port_22')
             port_80 = request.form.get('port_80')
 
             print(f'Launching {os} {size} with {port_22} {port_80}')
 
             props = {
-                
+                'key_name':key_name,
             }
-            launch_instance(g.user.account, None)
-            flash('OK', 'success')
+            # TODO: create sg
+            launch_instance(g.user.account, props)
+            flash('Launching instance', 'success')
             return redirect(url_for('compute.ec2'))
 
     keys = get_key_pairs(g.user.account)

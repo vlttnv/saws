@@ -23,6 +23,12 @@ Instances
 <!-- End Stop Modal -->
 
 <div class="col-xl-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index.index')}}">Home</a></li>
+            <li class="breadcrumb-item active">Instances</li>
+        </ol>
+    </nav>
     <div class="card">
         <div class="card-header">
             {% with messages = get_flashed_messages(with_categories=true) %}

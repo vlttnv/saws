@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block title %}
+Instance {{i.instance_id}}
+{% endblock %}
+{% block body %}
+<!-- Stop Modal -->
+<div class="modal fade" id="stopModal" tabindex="-1" aria-labelledby="stopModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="stopModalLabel">Are you sure?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="" class="btn btn-danger" id="stopButton"></a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Stop Modal -->
+<!-- Name Modal -->
+<div class="modal fade" id="nameModal" tabindex="-1" aria-labelledby="nameModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="nameModalLabel">Edit instance name</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form autocomplete="off" method="POST" action="{{url_for('compute.instance_name', id=i.instance_id)}}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <div class="modal-body">
+                    <label for="instance_name" class="form-label">Instance Name</label>
+                    <input class="form-control" id="instance_name" name="instance_name" value="{{i.name}}">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="download">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="col-xl-8">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index.index')}}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('compute.ec2')}}">Instances</a></li>
+            <li class="breadcrumb-item active">{{i.instance_id}}</li>
+        </ol>
+    </nav>
+    <div class="card">
+        <div class="card-header">
+            <div class="float-end">
+                <button type="button"
+                    class="btn btn-warning{% if i.state['Name'] != 'running' %} disabled{% endif %}"
+                    data-bs-toggle="modal" data-bs-target="#stopModal" data-bs-instance="{{i.instance_id}}"
+                    data-bs-action="stop"><i class="fas fa-stop"></i> Stop</button>
+                <button type="button"
+                    class="btn btn-danger{% if i.state['Name'] == 'terminated' %} disabled{% endif %}"
+                    data-bs-toggle="modal" data-bs-target="#stopModal" data-bs-instance="{{i.instance_id}}"
+                    data-bs-action="terminate"><i class="fas fa-trash"></i> Terminate</button>
+            </div>
+            <h5 class="card-title mb-0">Instance {{i.instance_id}}</h5>
+        </div>
+        <div class="card-body">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{category}} alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-icon">
+                    <i class="far fa-fw fa-bell"></i>
+                </div>
+                <div class="alert-message">
+                    {{ message }}
+                </div>
+            </div>
+            {% endfor %}
+            {% endwith %}
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>Instance ID</th>
+                        <td>{{i.instance_id}}</td>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <td>{{i.name}} <button type="button" class="btn btn-primary py-0 px-1" data-bs-toggle="modal"
+                                data-bs-target="#nameModal"><i class="fas fa-pen"></i></button></td>
+                    </tr>
+                    <tr>
+                        <th>Instance Type</th>
+                        <td>{{i.instance_type}}</td>
+                    </tr>
+                    <tr>
+                        <th>Key Pair</th>
+                        <td>{{i.key_name}}</td>
+                    </tr>
+                    <tr>
+                        <th>Launch Time</th>
+                        <td>{{i.launch_time}}</td>
+                    </tr>
+                    <tr>
+                        <th>DNS</th>
+                        <td>{{i.dns}}</td>
+                    </tr>
+                    <tr>
+                        <th>IP Address</th>
+                        <td>{{i.ip_address}}</td>
+                    </tr>
+                    <tr>
+                        <th>State</th>
+                        <td><span class="badge bg-{{state_map[i['state']['Name']]}}">{{i.state['Name']}}</span></td>
+                    </tr>
+                    <tr>
+                        <th>Security Groups</th>
+                        <td>
+                            {% for g in i.security_groups %}
+                            {{g}}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Datatables clients
+        $("#datatables-instances").DataTable({
+            responsive: true,
+        });
+    });
+
+    var stopModal = document.getElementById('stopModal')
+    stopModal.addEventListener('show.bs.modal', function (event) {
+        // Button that triggered the modal
+        var button = event.relatedTarget
+        // Extract info from data-bs-* attributes
+        var instance = button.getAttribute('data-bs-instance')
+        var action = button.getAttribute('data-bs-action')
+        var modalBody = stopModal.querySelector('.modal-body')
+        // Update the modal's content.
+        var modalTitle = stopModal.querySelector('.modal-title')
+        var modalButton = document.getElementById('stopButton')
+
+        modalTitle.textContent = 'Stop instance ' + instance
+        if (action === 'terminate') {
+            modalBody.textContent = 'Are you sure you want to terminate this instance? This cannot be undone.'
+            modalButton.href = "{{url_for('compute.instance_terminate', instance='')}}" + instance
+            modalButton.textContent = 'Yes, terminate'
+        } else if (action === 'stop') {
+            modalBody.textContent = 'Are you sure you want to stop this instance? You can alway start it again later.'
+            modalButton.href = "{{url_for('compute.instance_stop', instance='')}}" + instance
+            modalButton.textContent = 'Yes, stop'
+        }
+    })
+
+</script>
+{% endblock %}
