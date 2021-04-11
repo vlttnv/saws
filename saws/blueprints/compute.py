@@ -1,4 +1,3 @@
-from re import I
 from flask import (
     Blueprint,
     render_template,
@@ -74,7 +73,6 @@ def instance_create():
     print(request.method)
     if request.method == 'POST':
         if instance_form.validate():
-            print(request.form)
             os = request.form.get('os')
             size = request.form.get('size')
             key_name = request.form.get('key_pair')

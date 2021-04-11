@@ -38,6 +38,9 @@ def create_app(test_config=None):
         from .blueprints import compute
         app.register_blueprint(compute.bp)
 
+        from.blueprints import networking
+        app.register_blueprint(networking.bp)
+
         return app
 
 

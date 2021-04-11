@@ -67,12 +67,12 @@
                             <li class="sidebar-item"><a class="sidebar-link" href="pages-profile.html">S3</a></li>
                         </ul>
                     </li>
-                    <li class="sidebar-item">
+                    <li class="sidebar-item {% if '/networking' in request.path %}active{% endif %}">
                         <a data-bs-target="#networking" data-bs-toggle="collapse" class="sidebar-link collapsed">
                             <i class="align-middle" data-feather="link"></i> <span class="align-middle">Networking</span>
                         </a>
-                        <ul id="networking" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
-                            <li class="sidebar-item"><a class="sidebar-link" href="pages-profile.html">Security Groups</a></li>
+                        <ul id="networking" class="sidebar-dropdown list-unstyled {% if '/networking' not in request.path %}collapse{% endif %} " data-bs-parent="#sidebar">
+                            <li class="sidebar-item {% if '/networking/security_groups' in request.path %}active{% endif %}"><a class="sidebar-link" href="{{url_for('networking.security_groups')}}">Security Groups</a></li>
                         </ul>
                     </li>
                     <li class="sidebar-item">

@@ -1,4 +1,4 @@
-import boto3
+from saws.blueprints.utils.utils import ec2_client
 
 
 class EC2Instance(object):
@@ -29,26 +29,6 @@ class EC2Instance(object):
                 self.name = tag['Value']
                 break
 
-
-def ec2_client(region, account, _type='client'):
-    if _type == 'client':
-        client = boto3.client(
-            'ec2',
-            aws_access_key_id=account.access_key,
-            aws_secret_access_key=account.secret_key,
-            region_name=region,
-        )
-
-        return client
-    elif _type == 'resource':
-        resource = boto3.resource(
-            'ec2',
-            aws_access_key_id=account.access_key,
-            aws_secret_access_key=account.secret_key,
-            region_name=region,
-        )
-
-        return resource
 
 def get_ec2_info(account):
     client = ec2_client('eu-west-1', account)

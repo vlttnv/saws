@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}
+Create Security Group
+{% endblock %}
+{% block body %}
+<!-- TCP Modal -->
+<div class="modal fade" id="tcpModal" tabindex="-1" aria-labelledby="tcpModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tcpModalLabel">Add port or port range</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{url_for('networking.add_port', sg_id=sg._id)}}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="protocol" class="form-label">Protocol</label>
+                        <select class="form-select" id="protocol" name="protocol" aria-label="Default select example">
+                            <option value="no" selected>Select protocol</option>
+                            <option value="tcp">TCP</option>
+                            <option value="udp">UDP</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="port" class="form-label">Port/Range</label>
+                        <p>Enter a single port i.e. <code>80</code> or a range <code>5000-6000</code>.</p>
+                        <input type="text" class="form-control" id="port" name="port">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="col-xl-8">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index.index')}}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('networking.security_groups')}}">Security Group</a></li>
+            <li class="breadcrumb-item active">Edit {{sg.name}}</li>
+        </ol>
+    </nav>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Details</h5>
+        </div>
+        <div class="card-body">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{category}} alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message">
+                    {{ message }}
+                </div>
+            </div>
+            {% endfor %}
+            {% endwith %}
+
+
+            <div class="mb-3 row">
+                <label for="sg_name" class="form-label">Security group name</label>
+                <div class="col-sm-10">
+                    <strong>{{sg.name}}</strong>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label for="sg_description" class="form-label">Description</label>
+                <div class="col-sm-10">
+                    <strong>{{sg.description}}</strong>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label for="sg_description" class="form-label">Ports</label>
+                <div class="col-sm-10">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tcpModal">
+                        Add port
+                    </button>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width:40%;">Port/Range</th>
+                                <th style="width:50%">Protocol</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in sg.ports %}
+                            <tr>
+                                <td>{{p[0]}}</td>
+                                <td>{{p[1]}}</td>
+                                <td class="table-action">
+                                    <a href="{{url_for('networking.delete_port', sg_id=sg._id, port=p[0], protocol=p[1])}}"><i class="align-middle" data-feather="trash"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}   
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

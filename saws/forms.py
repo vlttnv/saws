@@ -114,3 +114,26 @@ class CreateInstanceForm(FlaskForm):
         },
     )
     port_80 = BooleanField('HTTP')
+
+
+class CreateSecurityGroupForm(FlaskForm):
+    name = StringField(
+        'name',
+        validators=[
+            InputRequired(),
+        ],
+        render_kw={
+            "required": True,
+            "autocomplete": "off",
+        },
+    )
+    description = StringField(
+        'description',
+        validators=[
+            InputRequired(),
+        ],
+        render_kw={
+            "required": True,
+            "autocomplete": "off",
+        },
+    )
