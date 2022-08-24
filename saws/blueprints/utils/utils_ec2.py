@@ -58,8 +58,8 @@ def launch_instance(account, props):
         InstanceType='t2.micro',
         MinCount=1,
         MaxCount=1,
-        SecurityGroupIds=['sg-04926d8b8842fa13e'],
         KeyName=props['key_name'],
+        SecurityGroups=[props['sg']],
     )
 
 

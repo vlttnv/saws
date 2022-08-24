@@ -22,6 +22,7 @@ from saws.blueprints.utils.utils_ec2 import (
     EC2Instance,
 )
 from saws.blueprints.utils.utils_lambda import get_lambda_info
+from saws.blueprints.utils.utils_networking import get_sgs
 from saws.forms import CreateInstanceForm
 
 
@@ -70,27 +71,29 @@ def instance_name(id):
 @login_required
 def instance_create():
     instance_form = CreateInstanceForm(request.form)
-    print(request.method)
     if request.method == 'POST':
         if instance_form.validate():
             os = request.form.get('os')
             size = request.form.get('size')
             key_name = request.form.get('key_pair')
-            port_22 = request.form.get('port_22')
-            port_80 = request.form.get('port_80')
-
-            print(f'Launching {os} {size} with {port_22} {port_80}')
+            sg = request.form.get('security_group')
 
             props = {
                 'key_name':key_name,
+                'sg': sg,
             }
-            # TODO: create sg
             launch_instance(g.user.account, props)
             flash('Launching instance', 'success')
             return redirect(url_for('compute.ec2'))
 
     keys = get_key_pairs(g.user.account)
-    return render_template('compute/ec2_create.html', keys=keys, form=instance_form)
+    sgs = get_sgs(g.user.account)
+    return render_template(
+        'compute/ec2_create.html',
+        keys=keys,
+        sgs=sgs,
+        form=instance_form,
+    )
 
 
 @bp.route('/ec2/stop/<instance>', methods=['GET'])

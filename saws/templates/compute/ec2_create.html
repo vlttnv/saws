@@ -97,6 +97,20 @@ Launch Instance
                         </small>
                     </div>
                 </div>
+
+                <div class="mb-3 row">
+                    <label class="col-form-label col-sm-2 text-sm-right">Security Group</label>
+                    <div class="col-sm-10">
+                        <select id="security_group" name="security_group" class="form-contro form-select">
+                            {% for sg in sgs['SecurityGroups'] %}
+                            <option name="{{sg['GroupName']}}" value="{{sg['GroupName']}}">{{sg['GroupName']}}</option>
+                            {% endfor %}
+                        </select>
+                        <small>
+                            <a href="{{url_for('networking.sg_create')}}">Create a new security group here</a>
+                        </small>
+                    </div>
+                </div>
                 <!-- <div class="mb-3 row">
                     <label class="col-form-label col-sm-2 text-sm-right pt-sm-0">Open Ports</label>
                     <div class="col-sm-10">
